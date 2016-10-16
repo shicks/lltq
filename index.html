@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<style>
+  body {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: stretch;
+    align-content: stretch;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  #result {
+    flex: 40% 1 1;
+    overflow: auto;
+    padding: 1em 1em 1em 2.5em;
+    font-weight: bold;
+    text-indent: -1.5em;
+  }
+  #main {
+    flex: 60% 1 1;
+    padding: 0 1em 1em 1em;
+    overflow: auto;
+  }
+</style>
+<div id="main"></div>
+<div id="result"></div>
+<!-- TODO - find a CDN for this -->
+<script src="lz-string.min.js"></script>
+<script src="lltq.js"></script>
