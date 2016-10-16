@@ -896,68 +896,71 @@ function evaluate() {
 
   function doWeek(i) {
     tests = [];
-    heading('Week ' + i);
-    weekBanner();
-    state.weeknum = i - 1;
-    state.week = i;
-    // Choose outfit
-    var outfit = choice('_outfit', 'Plan', outfits());
-    if (outfit != 'no_change') state.outfit = outfit;
-    // Choose classes
-    var classOpts = {};
-    var rates = studyRates();
-    for (var c in rates) {
-      if (c == 'lumen' && !state.lumen_unlocked) continue;
-      for (var s in skillGroups[skillParents[c]][c]) {
-        classOpts[s] = s.replace(/_/g, ' ') + ': ' +
-            (state[s] || 0).toFixed(2) + ' +' + rates[c].toFixed(2);
-      }
-    }
-    var amClass = choice('_am', '', classOpts);
-    var pmClass = choice('_pm', '', classOpts);
-    study(amClass, rates);
-    study(pmClass, rates);
-    // Events
-    weeks[i - 1]();
-    if (state.dead) {
-      showResult('Dead: ' + state.dead);
-      doWeek = function() {};
-      return;
-    } else if (state.epilogue) {
-      showEpilogue(state.epilogue);
-      doWeek = function() {};
-      return;
-    } else if (state.skip_weekend || i == 40) {
-      state.skip_weekend = false;
-      return;
-    }
-    // Weekend activities
-    var activityOpts = {};
-    for (var activity in activities) {
-      var result = activities[activity]();
-      if (result == null) continue;
-      // TODO - move the summary into common choice code - may be
-      //        able to pull this out into basically just a simple
-      //        call to choice... (i.e. with function support?)
-      //      - pull out an interesting_stats = {..., cruelty, *_approval}
-      var summary = [];
-      var other = '';
-      for (var mod in result) {
-        if (moods[mod] || mod == 'cruelty' || mod == 'noble_approval') {
-          if (result[mod]) {
-            summary.push(mod + (result[mod] > 0 ? ' +' : ' ') + result[mod]);
-          }
-        } else {
-          other = '*';
+    try {
+      heading('Week ' + i);
+      weekBanner();
+      state.weeknum = i - 1;
+      state.week = i;
+      // Choose outfit
+      var outfit = choice('_outfit', 'Plan', outfits());
+      if (outfit != 'no_change') state.outfit = outfit;
+      // Choose classes
+      var classOpts = {};
+      var rates = studyRates();
+      for (var c in rates) {
+        if (c == 'lumen' && !state.lumen_unlocked) continue;
+        for (var s in skillGroups[skillParents[c]][c]) {
+          classOpts[s] = s.replace(/_/g, ' ') + ': ' +
+              (state[s] || 0).toFixed(2) + ' +' + rates[c].toFixed(2);
         }
       }
-      if (other) summary.push(other);
-      activityOpts[activity] = activity.replace(/_/g, ' ') + ': ' +
-          summary.join(', ');
+      var amClass = choice('_am', '', classOpts);
+      var pmClass = choice('_pm', '', classOpts);
+      study(amClass, rates);
+      study(pmClass, rates);
+      // Events
+      weeks[i - 1]();
+      if (state.dead) {
+        showResult('Dead: ' + state.dead);
+        doWeek = function() {};
+        return;
+      } else if (state.epilogue) {
+        showEpilogue(state.epilogue);
+        doWeek = function() {};
+        return;
+      } else if (state.skip_weekend || i == 40) {
+        state.skip_weekend = false;
+        return;
+      }
+      // Weekend activities
+      var activityOpts = {};
+      for (var activity in activities) {
+        var result = activities[activity]();
+        if (result == null) continue;
+        // TODO - move the summary into common choice code - may be
+        //        able to pull this out into basically just a simple
+        //        call to choice... (i.e. with function support?)
+        //      - pull out an interesting_stats = {..., cruelty, *_approval}
+        var summary = [];
+        var other = '';
+        for (var mod in result) {
+          if (moods[mod] || mod == 'cruelty' || mod == 'noble_approval') {
+            if (result[mod]) {
+              summary.push(mod + (result[mod] > 0 ? ' +' : ' ') + result[mod]);
+            }
+          } else {
+            other = '*';
+          }
+        }
+        if (other) summary.push(other);
+        activityOpts[activity] = activity.replace(/_/g, ' ') + ': ' +
+            summary.join(', ');
+      }
+      var activityPicked = choice('_activity', 'Weekend activity', activityOpts);
+      doObject(activities[activityPicked]());
+    } finally {
+      text(tests.join(', '));
     }
-    var activityPicked = choice('_activity', 'Weekend activity', activityOpts);
-    doObject(activities[activityPicked]());
-    text(tests.join(', '));
   }
 
   var activities = {
