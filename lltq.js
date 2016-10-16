@@ -1718,7 +1718,7 @@ function evaluate() {
               {text: 'Brin, Duchess of Hellas', crowded: +1, willfulness: +1},
             Arisse: {text: 'Arisse, Duchess of Lillah',
                      crowded: +1, willfulness: +1},
-            Alice: {text: 'Alice, the main',
+            Alice: {text: 'Alice, the maid',
                     cruelty: +1, crowded: +1, willfulness: +1,
                     noble_approval: -15, commoner_approval: -5}});            
         } else {
