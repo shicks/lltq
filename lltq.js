@@ -2496,7 +2496,7 @@ function evaluate() {
       if (!can_skip) decisions.week32_chocolate = 'fail';
       var eat = can_skip ? choice('_chocolate', 'Chocolates', {
         eat: 'Eat candy now', save: 'Save it for later'}) : 'eat';
-      if (eat) {
+      if (eat == 'eat') {
         set('cheerfulness', -1); // +1 but then -2
         if (!test('poison', 70)) state.dead = 'poisoned';
       }
